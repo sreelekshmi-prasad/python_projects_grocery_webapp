@@ -6,8 +6,10 @@ import json
 import products_dao
 import orders_dao
 import uom_dao
-
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
 
 connection = get_sql_connection()
 
@@ -51,6 +53,22 @@ def insert_order():
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
+
+
+@app.route('/editProduct', methods=['GET'])
+def edit_product():
+    request_payload = request.get_json()  # Get JSON data from the request
+    updated_product_id = products_dao.update_product(connection, request_payload)  # Call update function
+        
+    response = jsonify({
+        'message': 'Product updated successfully',
+        'product_id': updated_product_id
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')  # Enable CORS
+        
+    return response
+    
+
 
 @app.route('/deleteProduct', methods=['POST'])
 def delete_product():

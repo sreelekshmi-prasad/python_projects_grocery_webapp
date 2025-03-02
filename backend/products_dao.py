@@ -27,6 +27,19 @@ def insert_new_product(connection, product):
 
     return cursor.lastrowid
 
+def update_product(connection, product_data):
+    cursor = connection.cursor()
+    
+    query = "UPDATE products SET name=%s, uom_id=%s, price_per_unit=%s WHERE product_id=%s"
+    data = (product_data['name'], product_data['uom_id'], product_data['price'], product_data['id'])
+    cursor.execute(query, data)
+    
+    connection.commit()  # Commit the update to the database
+    
+    return product_data['id']  # Return updated product ID
+
+
+
 def delete_product(connection, product_id):
     cursor = connection.cursor()
     query = ("DELETE FROM products where product_id=" + str(product_id))
@@ -34,6 +47,9 @@ def delete_product(connection, product_id):
     connection.commit()
 
     return cursor.lastrowid
+
+
+
 
 if __name__ == '__main__':
     connection = get_sql_connection()
